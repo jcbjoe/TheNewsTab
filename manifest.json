@@ -1,6 +1,6 @@
 {
-  "name": "New Tab",
-  "description": "My own new tab page",
+  "name": "The One Tab",
+  "description": "An all in one new tab extension for chrome",
   "version": "1.0",
   "chrome_url_overrides": { "newtab": "index.html" },
   "manifest_version": 2,

@@ -56,77 +56,62 @@
     </style>
   </head>
   <body>
-    <nav id="menu">
-      <header>
-        <h2>Feeds</h2>
-        <table style="width: 100%">
-          <tbody>
-            <tr>
-              <td>The Verge</td>
-              <td style="text-align: center">
-                <input type="checkbox" />
-              </td>
-            </tr>
-            <tr>
-              <td>BBC News</td>
-              <td style="text-align: center">
-                <input type="checkbox" />
-              </td>
-            </tr>
-            <tr>
-              <td>Mac Rumours</td>
-              <td style="text-align: center">
-                <input type="checkbox" />
-              </td>
-            </tr>
-          </tbody>
-        </table>
-      </header>
-    </nav>
-    <main id="panel">
-      <button class="button is-white toggle-button">
-        <i class="fas fa-cog"></i>
-      </button>
-      <section class="section">
-        <div class="container">
-          <div class="columns">
-            <div class="column"></div>
-            <div class="column is-two-thirds">
-              <form
-                action="https://www.google.com/search"
-                class="searchform"
-                method="get"
-                name="searchform"
-              >
-                <div class="field has-addons">
-                  <div class="control is-expanded">
-                    <input class="input" type="text" name="q" />
-                  </div>
-                  <div class="control">
-                    <button type="submit" class="button is-primary">
-                      Search
-                    </button>
-                  </div>
+    <button class="button is-white toggle-button">
+      <i class="fas fa-cog"></i>
+    </button>
+    <section class="section">
+      <div class="container">
+        <div class="columns">
+          <div class="column"></div>
+          <div class="column is-two-thirds">
+            <form action="https://www.google.com/search" class="searchform" method="get" name="searchform">
+              <div class="field has-addons">
+                <div class="control is-expanded">
+                  <input class="input" type="text" name="q" />
                 </div>
-              </form>
-            </div>
-            <div class="column"></div>
+                <div class="control">
+                  <button type="submit" class="button is-primary">Search</button>
+                </div>
+              </div>
+            </form>
           </div>
+          <div class="column"></div>
         </div>
-      </section>
-      <section class="section" style="padding-top: 0px">
-        <div class="container">
-          <h2>Top sites</h2>
-          <div class="columns" id="commonSites"></div>
-        </div>
-      </section>
-      <section class="section">
-        <div class="container">
-          <h2>My Feed</h2>
-          <div class="columns is-multiline" id="news"></div>
-        </div>
-      </section>
-    </main>
+      </div>
+    </section>
+    <section class="section" style="padding-top: 0px">
+      <div class="container">
+        <h2>Top sites</h2>
+        <div class="columns" id="commonSites"></div>
+      </div>
+    </section>
+    <section class="section">
+      <div class="container">
+        <h2>My Feed</h2>
+        <div class="columns is-multiline" id="news"></div>
+      </div>
+    </section>
+    <div class="modal" id="settings-modal">
+      <div class="modal-background"></div>
+      <div class="modal-card">
+        <header class="modal-card-head">
+          <p class="modal-card-title">Settings</p>
+          <button class="delete" aria-label="close"></button>
+        </header>
+        <section class="modal-card-body">
+          <div class="content">
+            <h2>General Settings</h2>
+            <div id="settings-general"></div>
+            <h2>News Feeds</h2>
+            <div id="settings-feeds"></div>
+          </div>
+        </section>
+        <footer class="modal-card-foot">
+          <button class="button is-success">Save changes</button>
+          <button class="button">Cancel</button>
+        </footer>
+      </div>
+    </div>
     <script src="rss-parser.min.js"></script>
     <script src="all.min.js"></script>
     <script src="jquery-3.4.1.slim.min.js"></script>
