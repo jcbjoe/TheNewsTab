@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>New Tab</title>
+    <link rel="stylesheet" href="bulma.min.css" />
+    <link rel="stylesheet" href="all.min.css" />
+    <style>
+      .hero {
+        background-image: url("https://source.unsplash.com/random/1920x400");
+        background-size: cover;
+      }
+      .box {
+        padding: 10px;
+        text-align: center;
+        font-size: 14px;
+      }
+      .slideout-menu {
+        position: fixed;
+        top: 0;
+        bottom: 0;
+        width: 256px;
+        min-height: 100vh;
+        overflow-y: scroll;
+        -webkit-overflow-scrolling: touch;
+        z-index: 0;
+        display: none;
+      }
+
+      .slideout-menu-left {
+        left: 0;
+      }
+
+      .slideout-menu-right {
+        right: 0;
+      }
+
+      .slideout-panel {
+        position: relative;
+        z-index: 1;
+        will-change: transform;
+        background-color: #fff; /* A background-color is required */
+        min-height: 100vh;
+      }
+
+      .slideout-open,
+      .slideout-open body,
+      .slideout-open .slideout-panel {
+        overflow: hidden;
+      }
+
+      .slideout-open .slideout-menu {
+        display: block;
+      }
+    </style>
+  </head>
+  <body>
+    <nav id="menu">
+      <header>
+        <h2>Feeds</h2>
+        <table style="width: 100%">
+          <tbody>
+            <tr>
+              <td>The Verge</td>
+              <td style="text-align: center">
+                <input type="checkbox" />
+              </td>
+            </tr>
+            <tr>
+              <td>BBC News</td>
+              <td style="text-align: center">
+                <input type="checkbox" />
+              </td>
+            </tr>
+            <tr>
+              <td>Mac Rumours</td>
+              <td style="text-align: center">
+                <input type="checkbox" />
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </header>
+    </nav>
+    <main id="panel">
+      <button class="button is-white toggle-button">
+        <i class="fas fa-cog"></i>
+      </button>
+      <section class="section">
+        <div class="container">
+          <div class="columns">
+            <div class="column"></div>
+            <div class="column is-two-thirds">
+              <form
+                action="https://www.google.com/search"
+                class="searchform"
+                method="get"
+                name="searchform"
+              >
+                <div class="field has-addons">
+                  <div class="control is-expanded">
+                    <input class="input" type="text" name="q" />
+                  </div>
+                  <div class="control">
+                    <button type="submit" class="button is-primary">
+                      Search
+                    </button>
+                  </div>
+                </div>
+              </form>
+            </div>
+            <div class="column"></div>
+          </div>
+        </div>
+      </section>
+      <section class="section" style="padding-top: 0px">
+        <div class="container">
+          <h2>Top sites</h2>
+          <div class="columns" id="commonSites"></div>
+        </div>
+      </section>
+      <section class="section">
+        <div class="container">
+          <h2>My Feed</h2>
+          <div class="columns is-multiline" id="news"></div>
+        </div>
+      </section>
+    </main>
+    <script src="rss-parser.min.js"></script>
+    <script src="all.min.js"></script>
+    <script src="jquery-3.4.1.slim.min.js"></script>
+    <script src="slideout.min.js"></script>
+    <script src="main.js"></script>
+  </body>
+</html>

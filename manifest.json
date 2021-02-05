@@ -1,0 +1,12 @@
+{
+  "name": "New Tab",
+  "description": "My own new tab page",
+  "version": "1.0",
+  "chrome_url_overrides": { "newtab": "index.html" },
+  "manifest_version": 2,
+  "permissions": ["topSites", "<all_urls>", "storage"],
+  "background": {
+    "scripts": ["rss-parser.min.js", "background.js"],
+    "persistent": false
+  }
+}
