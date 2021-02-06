@@ -1,0 +1,12 @@
+.hero {
+  background-image: url("https://source.unsplash.com/random/1920x400");
+  background-size: cover;
+}
+.box {
+  padding: 10px;
+  text-align: center;
+  font-size: 14px;
+}
+.centre-column {
+  text-align: center !important;
+}

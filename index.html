@@ -1,62 +1,15 @@
 <!DOCTYPE html>
-<html>
+<html lang="en-GB">
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>New Tab</title>
-    <link rel="stylesheet" href="bulma.min.css" />
-    <link rel="stylesheet" href="all.min.css" />
-    <style>
-      .hero {
-        background-image: url("https://source.unsplash.com/random/1920x400");
-        background-size: cover;
-      }
-      .box {
-        padding: 10px;
-        text-align: center;
-        font-size: 14px;
-      }
-      .slideout-menu {
-        position: fixed;
-        top: 0;
-        bottom: 0;
-        width: 256px;
-        min-height: 100vh;
-        overflow-y: scroll;
-        -webkit-overflow-scrolling: touch;
-        z-index: 0;
-        display: none;
-      }
-
-      .slideout-menu-left {
-        left: 0;
-      }
-
-      .slideout-menu-right {
-        right: 0;
-      }
-
-      .slideout-panel {
-        position: relative;
-        z-index: 1;
-        will-change: transform;
-        background-color: #fff; /* A background-color is required */
-        min-height: 100vh;
-      }
-
-      .slideout-open,
-      .slideout-open body,
-      .slideout-open .slideout-panel {
-        overflow: hidden;
-      }
-
-      .slideout-open .slideout-menu {
-        display: block;
-      }
-    </style>
+    <link rel="stylesheet" href="bulma.min.css?v1.0.0" />
+    <link rel="stylesheet" href="all.min.css?v1.0.0" />
+    <link rel="stylesheet" href="style.css?v1.0.0" /
   </head>
   <body>
-    <button class="button is-white toggle-button">
+    <button id="open-settings" class="button is-white" aria-label="OpenSettings">
       <i class="fas fa-cog"></i>
     </button>
     <section class="section">
@@ -67,7 +20,7 @@
             <form action="https://www.google.com/search" class="searchform" method="get" name="searchform">
               <div class="field has-addons">
                 <div class="control is-expanded">
-                  <input class="input" type="text" name="q" />
+                  <input class="input" type="text" name="q" aria-label="Search" />
                 </div>
                 <div class="control">
                   <button type="submit" class="button is-primary">Search</button>
@@ -85,7 +38,7 @@
         <div class="columns" id="commonSites"></div>
       </div>
     </section>
-    <section class="section">
+    <section class="section pt-0">
       <div class="container">
         <h2>My Feed</h2>
         <div class="columns is-multiline" id="news"></div>
@@ -96,7 +49,7 @@
       <div class="modal-card">
         <header class="modal-card-head">
           <p class="modal-card-title">Settings</p>
-          <button class="delete" aria-label="close"></button>
+          <button class="delete close-modal" aria-label="close"></button>
         </header>
         <section class="modal-card-body">
           <div class="content">
@@ -104,18 +57,21 @@
             <div id="settings-general"></div>
             <h2>News Feeds</h2>
             <div id="settings-feeds"></div>
+            <h2>Advanced Settings</h2>
+            <button id="clear-cache" class="button is-warning">Clear Local Cache</button>
+            <button id="reset-rss-feeds" class="button is-danger">Reset RSS feeds</button>
+            <button id="reset-settings" class="button is-danger">Reset Settings</button>
           </div>
         </section>
         <footer class="modal-card-foot">
-          <button class="button is-success">Save changes</button>
-          <button class="button">Cancel</button>
+          <button id="save-settings" class="button is-success">Save changes</button>
+          <button class="button close-modal">Cancel</button>
         </footer>
       </div>
     </div>
-    <script src="rss-parser.min.js"></script>
-    <script src="all.min.js"></script>
-    <script src="jquery-3.4.1.slim.min.js"></script>
-    <script src="slideout.min.js"></script>
-    <script src="main.js"></script>
+    <script src="rss-parser.min.js?v1.0.0"></script>
+    <script src="all.min.js?v1.0.0"></script>
+    <script src="jquery-3.4.1.slim.min.js?v1.0.0"></script>
+    <script src="main.js?v1.0.0"></script>
   </body>
 </html>
