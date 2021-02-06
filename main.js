@@ -175,7 +175,7 @@ async function ConvertNewsToCards(news) {
                             </figure>
                         </div>
                         <div class="card-content">
-                            <div class="content">${article.title}</div>
+                            <div class="news-content">${article.title}</div>
                             <p class="subtitle">
                             <img src="https://s2.googleusercontent.com/s2/favicons?domain=${article.link}"> <span style="font-size: 15px;">${article.publisher}</span>
                             </p>

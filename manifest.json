@@ -1,6 +1,6 @@
 {
-  "name": "The One Tab",
-  "description": "An all in one new tab extension for chrome",
+  "name": "The News Tab",
+  "description": "A new tab extension for chrome that allows you to view the latest news",
   "version": "1.0",
   "chrome_url_overrides": { "newtab": "index.html" },
   "manifest_version": 2,

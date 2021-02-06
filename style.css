@@ -10,3 +10,20 @@
 .centre-column {
   text-align: center !important;
 }
+
+.news-content {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: 4;
+  -webkit-box-orient: vertical;
+  height: 100px;
+}
+
+.subtitle {
+  padding-top: 5px;
+  height: 30px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
