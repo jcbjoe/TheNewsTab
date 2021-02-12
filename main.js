@@ -12,7 +12,7 @@ async function LoadTopSites() {
     sites = sites.slice(0, 8);
     sites.forEach((site) => {
       let title = site.title;
-      if (site.title.length > 14) {
+      if (title.length > 14) {
         title = title.slice(0, 14) + "...";
       }
       innerSites += `
@@ -22,7 +22,7 @@ async function LoadTopSites() {
           <div style="transform: translateY(50%);">
             <img alt="${title}" src="https://s2.googleusercontent.com/s2/favicons?domain=${site.url}">
             <br>
-            <p>${title}</p>
+            <p style="white-space: nowrap;">${title}</p>
           </div>
         </div>
         </a>
