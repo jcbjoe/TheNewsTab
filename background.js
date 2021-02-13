@@ -243,6 +243,9 @@ async function GetSettings() {
     { key: "refreshTime", value: "5", friendlyName: "Feed Refresh Time", valueType: "number" },
     { key: "showDates", value: true, friendlyName: "Show Dates On Posts", valueType: "boolean" },
     { key: "search", value: true, friendlyName: "Search Engine", valueType: "dropdown", valueTypes: ["Google", "Bing", "Yahoo", "Duck Duck Go", "Ecosia"] },
+    { key: "bgColour", value: "#ffffff", friendlyName: "Background Colour", valueType: "colour" },
+    { key: "cardColour", value: "#ffffff", friendlyName: "News Cards Colour", valueType: "colour" },
+    { key: "textColour", value: "#ffffff", friendlyName: "Text Colour", valueType: "colour" },
   ];
 
   const settingsPromise = new Promise((resolve, reject) => {

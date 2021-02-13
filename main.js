@@ -1,3 +1,6 @@
+window.stop();
+SetupDynamicStyles();
+
 SetupModal();
 
 LoadTopSites();
@@ -7,6 +10,26 @@ BuildFeedPage();
 SetSearchFormTarget();
 
 CleanUpUrls();
+
+async function SetupDynamicStyles() {
+  const settings = await GetSettings();
+  const backgroundColour = settings["bgColour"].value;
+  const cardColour = settings["cardColour"].value;
+  const textColour = settings["textColour"].value;
+
+  let styles = `body { background-color: ${backgroundColour} !important }\n`;
+  styles += `.card { background-color: ${cardColour} !important }\n`;
+  styles += `body { color: ${textColour} !important }`;
+
+  var css = document.createElement("style");
+  css.type = "text/css";
+
+  if (css.styleSheet) css.styleSheet.cssText = styles;
+  else css.appendChild(document.createTextNode(styles));
+
+  document.getElementsByTagName("head")[0].appendChild(css);
+  document.body.style.visibility = "visible";
+}
 
 async function SetSearchFormTarget() {
   const settings = await GetSettings();
@@ -230,6 +253,9 @@ async function OpenGeneralSettings() {
           </select>
         </div>`;
         break;
+      case "colour":
+        valueHtml = `<input data-key="${setting.key}" class="input is-small" type="color" value="${setting.value}">`;
+        break;
       default:
         valueHtml = `<input data-key="${setting.key}" class="input is-small" type="text" value="${setting.value}">`;
     }
@@ -391,6 +417,7 @@ async function SaveSettings() {
     chrome.runtime.sendMessage({ contentScriptQuery: "SettingsSaved" }, (data) => {
       SetModalLoading(false);
       SetSearchFormTarget();
+      SetupDynamicStyles();
       closeSettings();
     });
   });
