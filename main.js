@@ -207,7 +207,7 @@ async function OpenRssSettings() {
 
   for (const feed of feeds) {
     const checked = feed.enabled ? "checked" : "";
-    feedHtml += `<tr><td>${feed.title}</td><td class='centre-column'><input type="checkbox" ${checked}></td><td class='centre-column'><button data-url="${feed.rssLink}" class="button is-small RssDeleteBtn"><i class="fas fa-times"></i></button></td></tr>`;
+    feedHtml += `<tr><td>${feed.title}</td><td class='centre-column'><input class="rss-enable-checkbox" type="checkbox" data-url="${feed.rssLink}" ${checked}></td><td class='centre-column'><button data-url="${feed.rssLink}" class="button is-small RssDeleteBtn"><i class="fas fa-times"></i></button></td></tr>`;
   }
 
   feedHtml +=
@@ -298,6 +298,7 @@ async function GetFeeds() {
 }
 
 async function SaveSettings() {
+  SetModalLoading(true);
   const settingContainerChildren = document.getElementById("settings-general-table").childNodes;
 
   const settings = await GetSettings();
@@ -320,8 +321,28 @@ async function SaveSettings() {
     newSettings.push(setting);
   }
 
-  SetModalLoading(true);
-  chrome.storage.sync.set({ settings: newSettings }, function () {
+  const rssCheckboxes = document.getElementsByClassName("rss-enable-checkbox");
+  const feeds = await GetFeeds();
+  for (const checkbox of rssCheckboxes) {
+    const url = checkbox.dataset.url;
+    const value = checkbox.checked;
+
+    let index = 0;
+    let found = false;
+    for (const feed of feeds) {
+      if (feed.rssLink == url) {
+        found = true;
+        break;
+      }
+      index++;
+    }
+
+    if (found) {
+      feeds[index].enabled = value;
+    }
+  }
+
+  chrome.storage.sync.set({ settings: newSettings, feeds: feeds }, function () {
     chrome.runtime.sendMessage({ contentScriptQuery: "SettingsSaved" }, (data) => {
       SetModalLoading(false);
       closeSettings();
