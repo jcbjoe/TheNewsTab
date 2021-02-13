@@ -8,7 +8,9 @@ chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
     return true;
   }
   if (request.contentScriptQuery == "SettingsSaved") {
-    CreateAlarm().then(() => sendResponse());
+    CreateAlarm().then(() => {
+      BuildFeedHtml().then(() => sendResponse());
+    });
     return true;
   }
   if (request.contentScriptQuery == "ForceRefresh") {
@@ -74,7 +76,7 @@ async function BuildFeedHtml() {
 
   news = news.slice(0, settings["maxPosts"].value);
 
-  const html = await ConvertNewsToCards(news);
+  const html = await ConvertNewsToCards(news, settings["showDates"].value);
 
   chrome.storage.local.set({ FeedHtml: html });
 }
@@ -135,7 +137,7 @@ async function GenerateFeedInfo(url) {
   return feedObj;
 }
 
-async function ConvertNewsToCards(news) {
+async function ConvertNewsToCards(news, showDate = false) {
   let html = "";
   for (const article of news) {
     let img = GetImageFromContent(article.content);
@@ -143,6 +145,12 @@ async function ConvertNewsToCards(news) {
       img = await GetImageFromURL(article.link);
     }
     article.img = img;
+    console.log(article);
+    let date = "";
+    if (showDate) {
+      date = '<p class="subtitle"><span class="dateSubtitle">' + moment(article.pubDate).fromNow() + "</span></p>";
+    }
+
     html += `<div class="column is-one-fifth"><a href="${article.link}">
                     <div class="card">
                         <div class="card-image">
@@ -152,9 +160,10 @@ async function ConvertNewsToCards(news) {
                         </div>
                         <div class="card-content">
                             <div class="news-content">${article.title}</div>
-                            <p class="subtitle">
+                            <p class="subtitle publisherSubtitle">
                             <img src="https://s2.googleusercontent.com/s2/favicons?domain=${article.link}"> <span style="font-size: 15px;">${article.publisher}</span>
                             </p>
+                            ${date}
                         </div>
                     </div></a>
                 </div>`;
