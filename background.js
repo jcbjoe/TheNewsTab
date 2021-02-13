@@ -46,6 +46,10 @@ chrome.windows.onCreated.addListener(function () {
   CreateAlarm();
 });
 
+chrome.runtime.onInstalled.addListener(function (details) {
+  CreateAlarm();
+});
+
 async function CreateAlarm() {
   return new Promise((resolve, reject) => {
     chrome.alarms.clearAll(async function () {
