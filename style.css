@@ -27,3 +27,42 @@
   text-overflow: ellipsis;
   white-space: nowrap;
 }
+
+.loader-wrapper {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: 100%;
+  background: #c9c9c97d;
+  opacity: 0;
+  z-index: -1;
+  transition: opacity 0.3s;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 6px;
+}
+
+.loader {
+  -webkit-animation: spinAround 0.5s infinite linear;
+  animation: spinAround 0.5s infinite linear;
+  border: 2px solid #646464;
+  border-radius: 290486px;
+  border-right-color: transparent;
+  border-top-color: transparent;
+  content: "";
+  display: block;
+  height: 5em;
+  position: relative;
+  width: 5em;
+}
+
+.is-active {
+  opacity: 1;
+  z-index: 1;
+}
+
+.is-loading {
+  position: relative;
+}

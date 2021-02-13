@@ -2,9 +2,21 @@ SetupModal();
 
 LoadTopSites();
 
-LoadFeeds();
+BuildFeedPage();
 
 CleanUpUrls();
+
+chrome.storage.onChanged.addListener((changes, areaName) => {
+  if (areaName == "local") {
+    if (changes.FeedHtml) {
+      if (!changes.FeedHtml.newValue) {
+        document.getElementById("news").innerHTML = "";
+      } else {
+        document.getElementById("news").innerHTML = changes.FeedHtml.newValue;
+      }
+    }
+  }
+});
 
 async function LoadTopSites() {
   chrome.topSites.get((sites) => {
@@ -79,6 +91,14 @@ async function SetupModal() {
   });
 }
 
+async function BuildFeedPage() {
+  chrome.storage.local.get("FeedHtml", function (items) {
+    if (items.FeedHtml) {
+      document.getElementById("news").innerHTML = items.FeedHtml;
+    }
+  });
+}
+
 function closeSettings() {
   var modal = document.querySelector(".modal"); // assuming you have only 1
   var html = document.querySelector("html");
@@ -87,163 +107,18 @@ function closeSettings() {
   html.classList.remove("is-clipped");
 }
 
-async function LoadFeeds() {
-  document.getElementById("news").innerHTML = "";
-
-  let news = await BuildNews();
-
-  news.sort((a, b) => b.pubDate - a.pubDate);
-
-  const settings = await GetSettings();
-
-  news = news.slice(0, settings["maxPosts"].value);
-
-  const html = await ConvertNewsToCards(news);
-
-  document.getElementById("news").innerHTML = html;
-}
-
-async function GetFeeds() {
-  return new Promise((resolve, reject) => {
-    chrome.storage.sync.get(["feeds"], async function (result) {
-      if (!result["feeds"]) {
-        const feeds = [];
-
-        const verge = await GenerateFeedInfo("http://theverge.com/rss/index.xml");
-        const bbc = await GenerateFeedInfo("http://feeds.bbci.co.uk/news/rss.xml?edition=uk");
-        const macrumours = await GenerateFeedInfo("http://feeds.macrumors.com/MacRumors-All");
-        const fselite = await GenerateFeedInfo("https://fselite.net/feed");
-        feeds.push(verge);
-        feeds.push(bbc);
-        feeds.push(macrumours);
-        feeds.push(fselite);
-
-        chrome.storage.sync.set({ feeds: feeds }, function () {
-          resolve(feeds);
-        });
-      } else {
-        resolve(result["feeds"]);
-      }
-    });
-  });
-}
-
-async function GenerateFeedInfo(url) {
-  const rssData = await GetRSS(url);
-  const feedObj = {
-    link: rssData.link,
-    title: rssData.title,
-    favicon: `https://s2.googleusercontent.com/s2/favicons?domain=${rssData.link}`,
-    rssLink: url,
-    enabled: true,
-  };
-  return feedObj;
-}
-
-async function BuildNews() {
-  const feeds = await GetFeeds();
-
-  const news = [];
-
-  for (const feed of feeds) {
-    if (feed.enabled) {
-      const rss = await GetRSS(feed.rssLink);
-      for (const item of rss.items) {
-        item.publisher = rss.title;
-        item.pubDate = new Date(item.pubDate);
-        news.push(item);
-      }
-    }
-  }
-
-  return news;
-}
-
-async function ConvertNewsToCards(news) {
-  let html = "";
-  for (const article of news) {
-    let img = GetImageFromContent(article.content);
-    if (img == null) {
-      img = await GetImageFromURL(article.link);
-    }
-    article.img = img;
-    html += `<div class="column is-one-fifth"><a href="${article.link}">
-                    <div class="card">
-                        <div class="card-image">
-                            <figure class="image is-4by3">
-                            <img src="${img}" style="object-fit: cover;" alt="Placeholder image">
-                            </figure>
-                        </div>
-                        <div class="card-content">
-                            <div class="news-content">${article.title}</div>
-                            <p class="subtitle">
-                            <img src="https://s2.googleusercontent.com/s2/favicons?domain=${article.link}"> <span style="font-size: 15px;">${article.publisher}</span>
-                            </p>
-                        </div>
-                    </div></a>
-                </div>`;
-  }
-  return html;
-}
-
-async function GetRSS(url) {
-  return new Promise((resolve, reject) => {
-    chrome.runtime.sendMessage({ contentScriptQuery: "rss", url: url }, async (data) => {
-      resolve(data);
-    });
-  });
-}
-
-async function GetImageFromURL(url) {
-  return new Promise((resolve, reject) => {
-    chrome.storage.local.get(["imageCache"], async function (result) {
-      if (!result["imageCache"]) {
-        const data = await GetWebpageSource(url);
-
-        const parsedData = new window.DOMParser().parseFromString(data, "text/html");
-        var meta = parsedData.querySelector('meta[property="og:image"]');
-        var value = meta && meta.getAttribute("content");
-
-        const map = new Map();
-
-        map.set(url, { imgUrl: value, lastAccessed: new Date().toISOString() });
-
-        chrome.storage.local.set({ imageCache: Array.from(map) }, function () {
-          resolve(value);
-        });
-      } else {
-        const map = new Map(result["imageCache"]);
-
-        if (map.has(url)) {
-          map.set(url, { imgUrl: map.get(url).imgUrl, lastAccessed: new Date().toISOString() });
-
-          chrome.storage.local.set({ imageCache: Array.from(map) }, function () {
-            resolve(map.get(url).imgUrl);
-          });
-        } else {
-          const data = await GetWebpageSource(url);
-
-          const parsedData = new window.DOMParser().parseFromString(data, "text/html");
-          var meta = parsedData.querySelector('meta[property="og:image"]');
-          var value = meta && meta.getAttribute("content");
-
-          map.set(url, { imgUrl: value, lastAccessed: new Date().toISOString() });
-
-          chrome.storage.local.set({ imageCache: Array.from(map) }, function () {
-            resolve(value);
-          });
-        }
-      }
-    });
-  });
-}
-
 async function clearLocalStorage() {
   return new Promise((resolve, reject) => {
+    SetModalLoading(true);
     chrome.storage.local.clear(function () {
       var error = chrome.runtime.lastError;
       if (error) reject(error);
-      else resolve();
+      else {
+        chrome.runtime.sendMessage({ contentScriptQuery: "ForceRefresh" }, (data) => {
+          SetModalLoading(false);
+          resolve();
+        });
+      }
     });
   });
 }
@@ -260,6 +135,7 @@ async function clearSyncStorage() {
 
 async function ResetSettings() {
   return new Promise((resolve, reject) => {
+    SetModalLoading(true);
     chrome.storage.sync.remove("settings", async function () {
       var error = chrome.runtime.lastError;
       if (error) reject(error);
@@ -267,6 +143,7 @@ async function ResetSettings() {
         // This adds the defaults back
         await GetSettings();
         await OpenGeneralSettings();
+        SetModalLoading(false);
         resolve();
       }
     });
@@ -275,6 +152,7 @@ async function ResetSettings() {
 
 async function ResetRssFeeds() {
   return new Promise((resolve, reject) => {
+    SetModalLoading(true);
     chrome.storage.sync.remove("feeds", async function () {
       var error = chrome.runtime.lastError;
       if (error) reject(error);
@@ -282,27 +160,11 @@ async function ResetRssFeeds() {
         // This adds the defaults back
         await GetFeeds();
         await OpenRssSettings();
+        SetModalLoading(false);
         resolve();
       }
     });
   });
-}
-
-async function GetWebpageSource(url) {
-  return new Promise((resolve, reject) => {
-    chrome.runtime.sendMessage({ contentScriptQuery: "get", url: url }, async (data) => {
-      resolve(data);
-    });
-  });
-}
-
-function GetImageFromContent(content) {
-  const text = $("<textarea />").html(content).text();
-  var parser = new DOMParser();
-  var htmlDoc = parser.parseFromString(text, "text/html");
-  const img = htmlDoc.querySelector("img");
-  if (img) return img.src;
-  else null;
 }
 
 async function CleanUpUrls() {
@@ -317,7 +179,17 @@ async function OpenGeneralSettings() {
   let generalHtml = "<table style='width:100%'><thead><tr><td>Setting</td><td>Value</td></tr></thead><tbody id='settings-general-table'>";
 
   for (const [key, setting] of Object.entries(settings)) {
-    generalHtml += `<tr><td>${setting.friendlyName}</td><td><input data-key="${setting.key}" class="input is-small" type="text" value="${setting.value}"></td></tr>`;
+    let valueHtml = "";
+    switch (setting.valueType) {
+      case "boolean":
+        let checked = "";
+        if (setting.value == "1") checked = "checked";
+        valueHtml = `<input data-key="${setting.key}" type="checkbox" ${checked}>`;
+        break;
+      default:
+        valueHtml = `<input data-key="${setting.key}" class="input is-small" type="text" value="${setting.value}">`;
+    }
+    generalHtml += `<tr><td>${setting.friendlyName}</td><td>${valueHtml}</td></tr>`;
   }
 
   generalHtml += "</tbody></table>";
@@ -363,6 +235,7 @@ async function OpenRssSettings() {
 }
 
 async function AddNewRSS(url) {
+  SetModalLoading(true);
   const rssFeed = await GenerateFeedInfo(url);
 
   const feeds = await GetFeeds();
@@ -370,12 +243,22 @@ async function AddNewRSS(url) {
   feeds.push(rssFeed);
 
   chrome.storage.sync.set({ feeds: feeds }, function () {
+    chrome.runtime.sendMessage({ contentScriptQuery: "ForceRefresh" }, (data) => {});
     OpenRssSettings();
-    LoadFeeds();
+    SetModalLoading(false);
+  });
+}
+
+async function GenerateFeedInfo(url) {
+  return new Promise((resolve, reject) => {
+    chrome.runtime.sendMessage({ contentScriptQuery: "GenerateFeedInfo", url: url }, (data) => {
+      resolve(data);
+    });
   });
 }
 
 async function RemoveRss(url) {
+  SetModalLoading(true);
   const feeds = await GetFeeds();
   let index = 0;
   let found = false;
@@ -392,33 +275,26 @@ async function RemoveRss(url) {
   }
 
   chrome.storage.sync.set({ feeds: feeds }, function () {
+    chrome.runtime.sendMessage({ contentScriptQuery: "ForceRefresh" }, (data) => {});
     OpenRssSettings();
-    LoadFeeds();
+    SetModalLoading(false);
   });
 }
 
 async function GetSettings() {
-  const settings = await new Promise((resolve, reject) => {
-    chrome.storage.sync.get(["settings"], async function (result) {
-      if (!result["settings"]) {
-        const settings = [{ key: "maxPosts", value: "10", friendlyName: "Maximum Posts" }];
-
-        chrome.storage.sync.set({ settings: settings }, function () {
-          resolve(settings);
-        });
-      } else {
-        resolve(result["settings"]);
-      }
+  return new Promise((resolve, reject) => {
+    chrome.runtime.sendMessage({ contentScriptQuery: "GetSettings" }, async (data) => {
+      resolve(data);
     });
   });
+}
 
-  const settingsFormatted = [];
-
-  for (const setting of settings) {
-    settingsFormatted[setting.key] = setting;
-  }
-
-  return settingsFormatted;
+async function GetFeeds() {
+  return new Promise((resolve, reject) => {
+    chrome.runtime.sendMessage({ contentScriptQuery: "GetFeeds" }, async (data) => {
+      resolve(data);
+    });
+  });
 }
 
 async function SaveSettings() {
@@ -429,8 +305,12 @@ async function SaveSettings() {
   for (const node of settingContainerChildren) {
     const input = node.querySelector("input");
     const key = input.dataset.key;
+
+    let inputVal = input.value;
+    if (input.type == "checkbox") inputVal = input.checked;
+
     const settingVal = settings[key];
-    settingVal.value = input.value;
+    settingVal.value = inputVal;
     settings[key] = settingVal;
   }
 
@@ -440,8 +320,19 @@ async function SaveSettings() {
     newSettings.push(setting);
   }
 
+  SetModalLoading(true);
   chrome.storage.sync.set({ settings: newSettings }, function () {
-    closeSettings();
-    LoadFeeds();
+    chrome.runtime.sendMessage({ contentScriptQuery: "SettingsSaved" }, (data) => {
+      SetModalLoading(false);
+      closeSettings();
+    });
   });
+}
+
+async function SetModalLoading(loading) {
+  if (loading) {
+    $(".loader-wrapper").addClass("is-active");
+  } else {
+    $(".loader-wrapper").removeClass("is-active");
+  }
 }

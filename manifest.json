@@ -4,9 +4,9 @@
   "version": "1.0",
   "chrome_url_overrides": { "newtab": "index.html" },
   "manifest_version": 2,
-  "permissions": ["topSites", "<all_urls>", "storage"],
+  "permissions": ["topSites", "<all_urls>", "storage", "alarms"],
   "background": {
-    "scripts": ["rss-parser.min.js", "background.js"],
+    "scripts": ["jquery-3.4.1.slim.min.js","rss-parser.min.js", "background.js"],
     "persistent": false
   }
 }
