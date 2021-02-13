@@ -4,7 +4,35 @@ LoadTopSites();
 
 BuildFeedPage();
 
+SetSearchFormTarget();
+
 CleanUpUrls();
+
+async function SetSearchFormTarget() {
+  const settings = await GetSettings();
+  const engine = settings["search"].value;
+  let url = "";
+  switch (engine) {
+    case "Google":
+      url = "https://www.google.com/search";
+      break;
+    case "Bing":
+      url = "https://www.bing.com/search";
+      break;
+    case "Yahoo":
+      url = "https://uk.search.yahoo.com/search";
+      break;
+    case "Duck Duck Go":
+      url = "https://duckduckgo.com/";
+      break;
+    case "Ecosia":
+      url = "https://www.ecosia.org/search";
+      break;
+    default:
+      url = "https://www.google.com/search";
+  }
+  document.getElementById("searchform").action = url;
+}
 
 chrome.storage.onChanged.addListener((changes, areaName) => {
   if (areaName == "local") {
@@ -186,6 +214,22 @@ async function OpenGeneralSettings() {
         if (setting.value == "1") checked = "checked";
         valueHtml = `<input data-key="${setting.key}" type="checkbox" ${checked}>`;
         break;
+      case "dropdown":
+        let values = "";
+        for (const type of setting.valueTypes) {
+          if (setting.value == type) {
+            values = values + `<option selected>${type}</option>\n`;
+          } else {
+            values = values + `<option>${type}</option>\n`;
+          }
+        }
+        valueHtml = `
+        <div class="select is-small">
+          <select data-key="${setting.key}">
+            ${values}
+          </select>
+        </div>`;
+        break;
       default:
         valueHtml = `<input data-key="${setting.key}" class="input is-small" type="text" value="${setting.value}">`;
     }
@@ -304,7 +348,8 @@ async function SaveSettings() {
   const settings = await GetSettings();
 
   for (const node of settingContainerChildren) {
-    const input = node.querySelector("input");
+    let input = node.querySelector("input");
+    if (!input) input = node.querySelector("select");
     const key = input.dataset.key;
 
     let inputVal = input.value;
@@ -345,6 +390,7 @@ async function SaveSettings() {
   chrome.storage.sync.set({ settings: newSettings, feeds: feeds }, function () {
     chrome.runtime.sendMessage({ contentScriptQuery: "SettingsSaved" }, (data) => {
       SetModalLoading(false);
+      SetSearchFormTarget();
       closeSettings();
     });
   });

@@ -238,6 +238,7 @@ async function GetSettings() {
     { key: "maxPosts", value: "10", friendlyName: "Maximum Posts", valueType: "number" },
     { key: "refreshTime", value: "5", friendlyName: "Feed Refresh Time", valueType: "number" },
     { key: "showDates", value: true, friendlyName: "Show Dates On Posts", valueType: "boolean" },
+    { key: "search", value: true, friendlyName: "Search Engine", valueType: "dropdown", valueTypes: ["Google", "Bing", "Yahoo", "Duck Duck Go", "Ecosia"] },
   ];
 
   const settingsPromise = new Promise((resolve, reject) => {
