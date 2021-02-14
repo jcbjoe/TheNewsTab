@@ -149,7 +149,6 @@ async function ConvertNewsToCards(news, showDate = false) {
       img = await GetImageFromURL(article.link);
     }
     article.img = img;
-    console.log(article);
     let date = "";
     if (showDate) {
       date = '<p class="subtitle"><span class="dateSubtitle">' + moment(article.pubDate).fromNow() + "</span></p>";
