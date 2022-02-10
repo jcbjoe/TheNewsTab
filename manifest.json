@@ -3,7 +3,7 @@
   "description": "A new tab extension for chrome that allows you to view the latest news",
   "version": "1.1",
   "chrome_url_overrides": { "newtab": "index.html" },
-  "manifest_version": 2,
+  "manifest_version": 3,
   "permissions": ["topSites", "<all_urls>", "storage", "alarms"],
   "background": {
     "scripts": ["jquery-3.4.1.slim.min.js","rss-parser.min.js", "moment.min.js", "background.js"],
