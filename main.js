@@ -28,6 +28,9 @@ async function SetSearchFormTarget() {
     case "Ecosia":
       url = "https://www.ecosia.org/search";
       break;
+    case "Brave":
+      url = "https://search.brave.com/search";
+      break;
     default:
       url = "https://www.google.com/search";
   }
