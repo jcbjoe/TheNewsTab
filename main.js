@@ -254,7 +254,13 @@ async function OpenRssSettings() {
 
   for (const feed of feeds) {
     const checked = feed.enabled ? "checked" : "";
-    feedHtml += `<tr><td>${feed.title}</td><td class='centre-column'><input class="rss-enable-checkbox" type="checkbox" data-url="${feed.rssLink}" ${checked}></td><td class='centre-column'><button data-url="${feed.rssLink}" class="button is-small RssDeleteBtn"><i class="fas fa-times"></i></button></td></tr>`;
+    feedHtml += `<tr><td>${feed.title} ${
+      feed.failed ? "- (Failed To Get Feed)" : ""
+    }</td><td class='centre-column'><input class="rss-enable-checkbox" type="checkbox" data-url="${
+      feed.rssLink
+    }" ${checked}></td><td class='centre-column'><button data-url="${
+      feed.rssLink
+    }" class="button is-small RssDeleteBtn"><i class="fas fa-times"></i></button></td></tr>`;
   }
 
   feedHtml +=

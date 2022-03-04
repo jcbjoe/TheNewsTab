@@ -91,12 +91,16 @@ async function BuildNews() {
   const news = [];
 
   for (const feed of feeds) {
-    if (feed.enabled) {
-      const rss = await GetRSS(feed.rssLink);
-      for (const item of rss.items) {
-        item.publisher = rss.title;
-        item.pubDate = new Date(item.pubDate);
-        news.push(item);
+    if (feed.enabled && !feed.failed) {
+      try {
+        const rss = await GetRSS(feed.rssLink);
+        for (const item of rss.items) {
+          item.publisher = rss.title;
+          item.pubDate = new Date(item.pubDate);
+          news.push(item);
+        }
+      } catch (e) {
+        console.log("Failed to load feed: ".feed.rssLink, e);
       }
     }
   }
@@ -108,16 +112,19 @@ async function GetFeeds() {
   return new Promise((resolve, reject) => {
     chrome.storage.sync.get(["feeds"], async function (result) {
       if (!result["feeds"]) {
+        const defaultFeedUrls = [
+          "http://theverge.com/rss/index.xml",
+          "http://feeds.bbci.co.uk/news/rss.xml?edition=uk",
+          "http://feeds.macrumors.com/MacRumors-All",
+          "https://fselite.net/feed",
+        ];
+
         const feeds = [];
 
-        const verge = await GenerateFeedInfo("http://theverge.com/rss/index.xml");
-        const bbc = await GenerateFeedInfo("http://feeds.bbci.co.uk/news/rss.xml?edition=uk");
-        const macrumours = await GenerateFeedInfo("http://feeds.macrumors.com/MacRumors-All");
-        const fselite = await GenerateFeedInfo("https://fselite.net/feed");
-        feeds.push(verge);
-        feeds.push(bbc);
-        feeds.push(macrumours);
-        feeds.push(fselite);
+        for (const defaultFeedUrl of defaultFeedUrls) {
+          const feedinfo = await GenerateFeedInfo(defaultFeedUrl);
+          feeds.push(feedinfo);
+        }
 
         chrome.storage.sync.set({ feeds: feeds }, function () {
           resolve(feeds);
@@ -130,14 +137,27 @@ async function GetFeeds() {
 }
 
 async function GenerateFeedInfo(url) {
-  const rssData = await GetRSS(url);
   const feedObj = {
-    link: rssData.link,
-    title: rssData.title,
-    favicon: `https://s2.googleusercontent.com/s2/favicons?domain=${rssData.link}`,
+    link: "",
+    title: "",
+    favicon: "",
     rssLink: url,
     enabled: true,
+    failed: false,
   };
+
+  try {
+    const rssData = await GetRSS(url);
+    feedObj.link = rssData.link;
+    feedObj.title = rssData.title;
+    feedObj.favicon = `https://s2.googleusercontent.com/s2/favicons?domain=${rssData.link}`;
+  } catch (e) {
+    feedObj.link = url;
+    feedObj.title = url;
+    feedObj.failed = true;
+    console.log("Failed to parse RSS: " + url, e);
+  }
+
   return feedObj;
 }
 
@@ -175,13 +195,11 @@ async function ConvertNewsToCards(news, showDate = false) {
 }
 
 async function GetRSS(url) {
-  return new Promise((resolve, reject) => {
-    let parser = new RSSParser();
-    parser.parseURL(url, function (err, feed) {
-      if (err) return reject(err);
-      resolve(feed);
-    });
-  });
+  const contents = await axios.get(url);
+  const xml = contents.data.replace(/&(?!(?:apos|quot|[gl]t|amp);|#)/g, "&amp;");
+  let parser = new RSSParser();
+  const feed = await parser.parseString(xml);
+  return feed;
 }
 
 async function GetImageFromURL(url) {
@@ -241,7 +259,13 @@ async function GetSettings() {
     { key: "maxPosts", value: "10", friendlyName: "Maximum Posts", valueType: "number" },
     { key: "refreshTime", value: "5", friendlyName: "Feed Refresh Time", valueType: "number" },
     { key: "showDates", value: true, friendlyName: "Show Dates On Posts", valueType: "boolean" },
-    { key: "search", value: true, friendlyName: "Search Engine", valueType: "dropdown", valueTypes: ["Google", "Bing", "Yahoo", "Duck Duck Go", "Ecosia", "Brave"] },
+    {
+      key: "search",
+      value: true,
+      friendlyName: "Search Engine",
+      valueType: "dropdown",
+      valueTypes: ["Google", "Bing", "Yahoo", "Duck Duck Go", "Ecosia", "Brave"],
+    },
   ];
 
   const settingsPromise = new Promise((resolve, reject) => {
