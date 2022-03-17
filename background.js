@@ -100,7 +100,7 @@ async function BuildNews() {
           news.push(item);
         }
       } catch (e) {
-        console.log("Failed to load feed: ".feed.rssLink, e);
+        console.log("Failed to load feed: " + feed.rssLink, e);
       }
     }
   }
