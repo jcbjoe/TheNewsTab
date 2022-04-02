@@ -2,7 +2,7 @@
     "version": "2.0.0",
     "manifest_version": 3,
     "name": "The News Tab",
-    "description": "",
+    "description": "A new tab extension for chrome that allows you to view the latest news",
     "background": { "service_worker": "background.bundle.js" },
     "permissions": ["topSites", "storage", "alarms"],
     "chrome_url_overrides": {
