@@ -1,5 +1,5 @@
 {
-    "version": "2.0.0",
+    "version": "2.0",
     "manifest_version": 3,
     "name": "The News Tab",
     "description": "A new tab extension for chrome that allows you to view the latest news",
