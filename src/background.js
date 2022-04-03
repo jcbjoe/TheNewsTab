@@ -334,6 +334,13 @@ async function GetSettings() {
       valueType: "dropdown",
       valueTypes: ["Google", "Bing", "Yahoo", "Duck Duck Go", "Ecosia", "Brave"],
     },
+    {
+      key: "theme",
+      value: "System",
+      friendlyName: "Theme",
+      valueType: "dropdown",
+      valueTypes: ["Light", "Dark", "System"],
+    },
   ];
 
   const settingsPromise = new Promise((resolve, reject) => {

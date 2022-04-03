@@ -173,13 +173,4 @@ export default {
 </script> 
 
 <style>
-@media (prefers-color-scheme: dark) {
-  .modal-card-body {
-    background-color: #17181c;
-  }
-  tr:last-child {
-    border-bottom: 1px solid;
-    border-color: #363636;
-  }
-}
 </style> 

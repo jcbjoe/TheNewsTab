@@ -1,0 +1,117 @@
+html {
+    background: #17181c;
+}
+
+html[data-theme="light"] {
+    background: #fff;
+}
+
+html[data-theme="dark"] {
+    background-color: #17181c;
+}
+
+html[data-theme="dark"] .button {
+    background-color: #0a0a0a;
+    border-color: #363636;
+    color: #dbdbdb;
+}
+
+html[data-theme="dark"] .box {
+    background-color: #0a0a0a;
+    box-shadow: 0 2px 3px rgb(255 255 255 / 10%), 0 0 0 1px rgb(255 255 255 / 10%);
+    color: #b5b5b5;
+}
+
+html[data-theme="dark"] .card {
+    background-color: #0a0a0a;
+    box-shadow: 0 2px 3px rgb(255 255 255 / 10%), 0 0 0 1px rgb(255 255 255 / 10%);
+    color: #b5b5b5;
+}
+
+html[data-theme="dark"] .input, html[data-theme="dark"] .textarea {
+    background-color: #0a0a0a;
+    border-color: #363636;
+    color: #dbdbdb;
+    box-shadow: inset 0 1px 2px rgb(255 255 255 / 10%);
+}
+
+html[data-theme="dark"] .modal-background {
+    background-color: rgba(255, 255, 255, 0.86);
+}
+
+html[data-theme="dark"] .label {
+    color: #dbdbdb;
+}
+
+html[data-theme="dark"] tr:last-child {
+    border-bottom: 1px solid;
+    border-color: #363636;
+}
+
+html[data-theme="dark"] .content table td, html[data-theme="dark"] .content table th {
+    border: 1px solid #363636;
+}
+
+html[data-theme="dark"] .button.is-danger {
+    background-color: #ff0537;
+    border-color: transparent;
+    color: #fff;
+}
+
+html[data-theme="dark"] body {
+    color: #b5b5b5;
+}
+
+html[data-theme="dark"] .button.is-success {
+    background-color: #1ca64c;
+    border-color: transparent;
+    color: #fff;
+}
+
+html[data-theme="dark"] .modal-card-head, html[data-theme="dark"] .modal-card-foot {
+    background-color: #242424;
+}
+
+html[data-theme="dark"] .modal-card-foot {
+    border-top: 1px solid #363636;
+}
+
+html[data-theme="dark"] .button.is-warning {
+    background-color: #ffd324;
+    border-color: transparent;
+    color: rgba(0, 0, 0, 0.7);
+}
+
+html[data-theme="dark"] .content h1, html[data-theme="dark"] .content h2, html[data-theme="dark"] .content h3, html[data-theme="dark"] .content h4, html[data-theme="dark"] .content h5, html[data-theme="dark"] .content h6 {
+    color: #dbdbdb;
+}
+
+html[data-theme="dark"] .select select {
+    background-color: #0a0a0a;
+    border-color: #363636;
+    color: #dbdbdb;
+}
+
+html[data-theme="dark"] .modal-card-title {
+    color: #dbdbdb;
+}
+
+html[data-theme="dark"] .content table thead td, html[data-theme="dark"] .content table thead th {
+    color: #dbdbdb;
+}
+
+html[data-theme="dark"] .modal-card-head {
+    border-bottom: 1px solid #363636;
+}
+
+html[data-theme="dark"] .input::-webkit-input-placeholder, html[data-theme="dark"] .textarea::-webkit-input-placeholder {
+    color: rgba(219, 219, 219, 0.3);
+}
+
+html[data-theme="dark"] .modal-card-body {
+    background-color: #17181c;
+}
+
+html[data-theme="dark"] .subtitle {
+    color: #b5b5b5;
+}

@@ -12,6 +12,8 @@ module.exports = {
 
     fs.copyFileSync("src/newtab.html", "dist/newtab.html");
     fs.copyFileSync("src/manifest.json", "dist/manifest.json");
+    fs.copyFileSync("src/theme.js", "dist/theme.js");
+    fs.copyFileSync("src/style.css", "dist/style.css");
 
     fs.copySync("src/vendor", "dist");
 

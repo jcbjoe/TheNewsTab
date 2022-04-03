@@ -99,8 +99,37 @@ export default {
   },
   async mounted() {
     await this.load();
+    window.matchMedia("(prefers-color-scheme: dark)").addEventListener("change", (e) => {
+      const localTheme = localStorage.getItem("theme");
+      if (localTheme == "system") {
+        this.SetTheme("system");
+      }
+    });
   },
   methods: {
+    SetTheme(theme) {
+      theme = theme.toLowerCase();
+      if (theme != "system" && theme != "dark" && theme != "light") throw new Exception("Invalid theme: " + theme);
+
+      if (theme == "system") {
+        let systemTheme = "";
+        if (window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches) {
+          systemTheme = "dark";
+        } else {
+          systemTheme = "light";
+        }
+        const localTheme = localStorage.getItem("theme");
+
+        if (localTheme && localTheme != "system") {
+          localStorage.setItem("theme", theme);
+        }
+
+        document.documentElement.setAttribute("data-theme", systemTheme);
+      } else {
+        localStorage.setItem("theme", theme);
+        document.documentElement.setAttribute("data-theme", theme);
+      }
+    },
     async load() {
       this.topSites = await this.GetTopSites();
       this.articles = await this.GetArticles();
@@ -111,6 +140,8 @@ export default {
         if (areaName == "sync") {
           if (changes.settings) {
             this.settings = changes.settings.newValue;
+            const theme = this.GetSetting("theme");
+            this.SetTheme(theme.value);
           }
           if (changes.feeds) {
             this.feeds = changes.feeds.newValue;
