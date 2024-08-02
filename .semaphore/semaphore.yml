@@ -14,5 +14,19 @@ blocks:
 promotions:
   - name: Production
     pipeline_file: pipeline_2.yml
+    parameters:
+      env_vars:
+        - required: true
+          options: []
+          default_value: ''
+          description: ''
+          name: tag
   - name: Stage
     pipeline_file: pipeline_3.yml
+    parameters:
+      env_vars:
+        - required: true
+          options: []
+          default_value: ''
+          description: ''
+          name: tag
