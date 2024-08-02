@@ -10,4 +10,9 @@ blocks:
       jobs:
         - name: 'Job #1'
           commands:
-            - checkout
+            - echo 'hello'
+promotions:
+  - name: Production
+    pipeline_file: pipeline_2.yml
+  - name: Stage
+    pipeline_file: pipeline_3.yml
